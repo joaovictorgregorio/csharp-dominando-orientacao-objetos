@@ -1,29 +1,28 @@
-﻿namespace ScreenSound.Models;
+﻿using System.Globalization;
 
-class Band
+namespace ScreenSound.Models;
+
+internal class Band
 {
-    private List<Album> _albums = [];
-    private List<int> _notes = [];
+    private readonly List<Album> _albums = [];
+    private readonly List<Evaluation> _notes = [];
 
     #region CONSTRUCTOR
-    public Band(string bandName) => BandName = bandName;
+    public Band(string bandName) => BandName = NormalizeBandName(bandName);
 
     #endregion CONSTRUCTOR
 
+    #region PROPERTIES
     public string? BandName { get; }
-    public double Average => _notes.Average();
+    public double Average => _notes.Count == 0 ? 0 : _notes.Average(a => a.Note);
+  
+    #endregion PROPERTIES
 
-    #region ADD ALBUM
+    #region METHODS
     public void AddAlbum(Album album) => _albums.Add(album);
 
-    #endregion ADD ALBUM
+    public void AddNote(Evaluation note) => _notes.Add(note);
 
-    #region ADD NOTE
-    public void AddNote(int note) => _notes.Add(note);
-
-    #endregion ADD NOTE
-
-    #region VIEW DISCOGRAPHY
     public void ViewDiscography()
     {
         Console.WriteLine($"Discografia da banda {BandName}", ConsoleColor.Green);
@@ -33,5 +32,11 @@ class Band
             Console.WriteLine($" Álbum: {album.AlbumName} com duração total de ({album.TotalDuration}) segundos");
         }
     }
-    #endregion VIEW DISCOGRAPHY
+
+    private static string NormalizeBandName(string value)
+    {
+        value = value.Trim().ToLowerInvariant();
+        return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(value);
+    }
+    #endregion METHODS
 }

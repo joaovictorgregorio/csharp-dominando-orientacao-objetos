@@ -1,6 +1,6 @@
 ﻿namespace ScreenSound.Models;
 
-class Music
+internal class Music
 {
     #region CONSTRUCTOR
         public Music(string? musicName, Band? artistic)

@@ -1,67 +1,14 @@
-﻿using ScreenSound.Models;
+﻿using ScreenSound.Data;
+using ScreenSound.Models;
+using ScreenSound.UI;
 
-#region APPLICATION DATA
-
-Dictionary<string, Band> registeredBands = new(StringComparer.OrdinalIgnoreCase);
-
-// Criar as bandas
-var ira = new Band("Ira");
-ira.AddNote(10);
-ira.AddNote(9);
-ira.AddNote(6);
-registeredBands.Add(ira.BandName, ira);
-
-var beatles = new Band("The Beatles");
-beatles.AddNote(8);
-beatles.AddNote(9);
-registeredBands.Add(beatles.BandName, beatles);
-
-var theWho = new Band("The Who");
-theWho.AddNote(7);
-theWho.AddNote(8);
-theWho.AddNote(9);
-registeredBands.Add(theWho.BandName, theWho);
-
-#endregion APPLICATION DATA
-
-#region PRINT COLORED
-void PrintColored(string text, ConsoleColor color)
-{
-    Console.ForegroundColor = color;
-    Console.WriteLine(text);
-    Console.ResetColor();
-}
-#endregion PRINT COLORED
-
-#region TYPE LINE
-void TypeLine(string text, ConsoleColor color = ConsoleColor.White, int delayMs = 0)
-{
-    Console.ForegroundColor = color;
-    foreach (char c in text)
-    {
-        Console.Write(c);
-        Thread.Sleep(delayMs);
-    }
-
-    Console.WriteLine();
-    Console.ResetColor();
-}
-#endregion TYPE LINE
-
-#region SHOW SECTION HEADER
-void ShowSectionHeader(string title)
-{
-    Console.WriteLine();
-    PrintColored(title, ConsoleColor.Yellow);
-    Console.WriteLine();
-}
-#endregion SHOW SECTION HEADER
+var registeredBands = AppDataSeeder.CreateRegisterBands();
 
 #region RETURN TO MENU
 void ReturnToMenu()
 {
     Console.WriteLine();
-    PrintColored("  Pressione qualquer tecla para voltar ao menu...", ConsoleColor.DarkGray);
+    ConsoleUi.PrintColored("  Pressione qualquer tecla para voltar ao menu...", ConsoleColor.DarkGray);
     Console.ReadKey(intercept: true);
 
     ShowTitleApplication();
@@ -79,21 +26,21 @@ void ShowTitleApplication()
 ░▀▀▀▄▄ █░░ █▄▄▀ █▀▀ █▀▀ █░░█ 　 ░▀▀▀▄▄ █░░█ █░░█ █░░█ █░░█ 
 ▒█▄▄▄█ ▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░░▀ 　 ▒█▄▄▄█ ▀▀▀▀ ░▀▀▀ ▀░░▀ ▀▀▀░";
 
-    PrintColored(titleApplication, ConsoleColor.Cyan);
+    ConsoleUi.PrintColored(titleApplication, ConsoleColor.Cyan);
 }
 #endregion SHOW TITLE APPLICATION
 
 #region DISPLAY MENU OPTIONS
 void DisplayMenuOptions()
 {
-    ShowSectionHeader("                     MENU PRINCIPAL");
+    ConsoleUi.ShowSectionHeader("                     MENU PRINCIPAL");
 
-    TypeLine("                  [1] Registrar banda", ConsoleColor.White);
-    TypeLine("                  [2] Registrar álbum da banda", ConsoleColor.White);
-    TypeLine("                  [3] Listar todas as bandas", ConsoleColor.White);
-    TypeLine("                  [4] Avaliar uma banda", ConsoleColor.White);
-    TypeLine("                  [5] Exibir detalhes da banda", ConsoleColor.White);
-    TypeLine("                  [0] Sair", ConsoleColor.Red);
+    ConsoleUi.TypeLine("                  [1] Registrar banda", ConsoleColor.White);
+    ConsoleUi.TypeLine("                  [2] Registrar álbum da banda", ConsoleColor.White);
+    ConsoleUi.TypeLine("                  [3] Listar todas as bandas", ConsoleColor.White);
+    ConsoleUi.TypeLine("                  [4] Avaliar uma banda", ConsoleColor.White);
+    ConsoleUi.TypeLine("                  [5] Exibir detalhes da banda", ConsoleColor.White);
+    ConsoleUi.TypeLine("                  [0] Sair", ConsoleColor.Red);
 
     Console.WriteLine();
 
@@ -104,7 +51,7 @@ void DisplayMenuOptions()
 
         if (!int.TryParse(Console.ReadLine(), out optionChosen) || optionChosen < 0 || optionChosen > 5)
         {
-            TypeLine("  ⚠  Opção inválida. Digite um número entre 0 e 5.", ConsoleColor.Red, 10);
+            ConsoleUi.TypeLine("  ⚠  Opção inválida. Digite um número entre 0 e 5.", ConsoleColor.Red, 10);
             optionChosen = -1;
         }
     } while (optionChosen < 0 || optionChosen > 5);
@@ -143,7 +90,7 @@ void HandleMenuOption(int option)
             break;
 
         default:
-            TypeLine("OPÇÃO INVÁLIDA. TENTE NOVAMENTE", ConsoleColor.Red, 30);
+            ConsoleUi.TypeLine("OPÇÃO INVÁLIDA. TENTE NOVAMENTE", ConsoleColor.Red, 30);
             ShowTitleApplication();
             DisplayMenuOptions();
             break;
@@ -155,7 +102,7 @@ void HandleMenuOption(int option)
 void RegisterBand()
 {
     ShowTitleApplication();
-    ShowSectionHeader("                     REGISTRO DE BANDAS");
+    ConsoleUi.ShowSectionHeader("                     REGISTRO DE BANDAS");
 
     string bandName;
     do
@@ -164,7 +111,7 @@ void RegisterBand()
         bandName = Console.ReadLine()!.Trim();
 
         if (string.IsNullOrWhiteSpace(bandName)) 
-            TypeLine("  ⚠  O nome não pode ser vazio. Tente novamente.", ConsoleColor.Red, 10);
+            ConsoleUi.TypeLine("  ⚠  O nome não pode ser vazio. Tente novamente.", ConsoleColor.Red, 10);
 
     } while (string.IsNullOrWhiteSpace(bandName));
 
@@ -172,7 +119,7 @@ void RegisterBand()
     registeredBands.Add(bandName, band);
 
     Console.WriteLine();
-    TypeLine($"  ✔  \"{bandName}\" registrada com sucesso!", ConsoleColor.Green, 20);
+    ConsoleUi.TypeLine($"  ✔  \"{bandName}\" registrada com sucesso!", ConsoleColor.Green, 20);
 
     ReturnToMenu();
 }
@@ -182,7 +129,7 @@ void RegisterBand()
 void RegisterAlbumBand()
 {
     ShowTitleApplication();
-    ShowSectionHeader("                     REGISTRO ÁLBUM DA BANDA");
+    ConsoleUi.ShowSectionHeader("                     REGISTRO ÁLBUM DA BANDA");
 
     string bandName;
     string albumTitle;
@@ -192,12 +139,12 @@ void RegisterAlbumBand()
         bandName = Console.ReadLine()!.Trim();
 
         if (string.IsNullOrWhiteSpace(bandName))
-            TypeLine("  ⚠  O nome não pode ser vazio. Tente novamente.", ConsoleColor.Red, 10);
+            ConsoleUi.TypeLine("  ⚠  O nome não pode ser vazio. Tente novamente.", ConsoleColor.Red, 10);
 
         if (!registeredBands.ContainsKey(bandName))
         {
             Console.WriteLine();
-            TypeLine($"  ⚠  A banda \"{bandName}\" não foi encontrada.", ConsoleColor.Red, 10);
+            ConsoleUi.TypeLine($"  ⚠  A banda \"{bandName}\" não foi encontrada.", ConsoleColor.Red, 10);
             ReturnToMenu();
             return;
         }
@@ -207,13 +154,13 @@ void RegisterAlbumBand()
             albumTitle = Console.ReadLine()!.Trim();
 
             if (string.IsNullOrWhiteSpace(albumTitle))
-                TypeLine("  ⚠  O álbum não pode ser vazio. Tente novamente.", ConsoleColor.Red, 10);
+                ConsoleUi.TypeLine("  ⚠  O álbum não pode ser vazio. Tente novamente.", ConsoleColor.Red, 10);
 
             var band = registeredBands[bandName];
             band.AddAlbum(new Album(albumTitle));
 
             Console.WriteLine();
-            TypeLine($"  ✔  O álbum \"{albumTitle}\" da banda \"{bandName}\" registrada com sucesso!", ConsoleColor.Green, 20);
+            ConsoleUi.TypeLine($"  ✔  O álbum \"{albumTitle}\" da banda \"{bandName}\" registrada com sucesso!", ConsoleColor.Green, 20);
         }
 
     } while (string.IsNullOrWhiteSpace(bandName));
@@ -227,19 +174,19 @@ void RegisterAlbumBand()
 void ListAllBands()
 {
     ShowTitleApplication();
-    ShowSectionHeader("                     LISTA DE BANDAS");
+    ConsoleUi.ShowSectionHeader("                     LISTA DE BANDAS");
 
     if (registeredBands.Count == 0)
     {
-        TypeLine("  ⚠  Nenhuma banda registrada ainda.", ConsoleColor.DarkGray, 20);
+        ConsoleUi.TypeLine("  ⚠  Nenhuma banda registrada ainda.", ConsoleColor.DarkGray, 20);
     }
     else
     {
-        PrintColored($"  {registeredBands.Count} banda(s) registrada(s):\n", ConsoleColor.DarkGray);
+        ConsoleUi.PrintColored($"  {registeredBands.Count} banda(s) registrada(s):\n", ConsoleColor.DarkGray);
 
         int index = 1;
         foreach(string band in registeredBands.Keys)
-            TypeLine($"  [{index++}] {band}", ConsoleColor.Cyan, 15);
+            ConsoleUi.TypeLine($"  [{index++}] {band}", ConsoleColor.Cyan, 15);
     }
 
     ReturnToMenu();
@@ -250,7 +197,7 @@ void ListAllBands()
 void EvaluateBand()
 {
     ShowTitleApplication();
-    ShowSectionHeader("                     AVALIAÇÃO DE BANDAS");
+    ConsoleUi.ShowSectionHeader("                     AVALIAÇÃO DE BANDAS");
 
     string bandName;
     do
@@ -259,36 +206,38 @@ void EvaluateBand()
         bandName = Console.ReadLine()!.Trim();
 
         if (string.IsNullOrWhiteSpace(bandName))
-            TypeLine("  ⚠  O nome não pode ser vazio. Tente novamente.", ConsoleColor.Red, 10);
+            ConsoleUi.TypeLine("  ⚠  O nome não pode ser vazio. Tente novamente.", ConsoleColor.Red, 10);
 
     } while (string.IsNullOrWhiteSpace(bandName));
 
     if (!registeredBands.ContainsKey(bandName))
     {
         Console.WriteLine();
-        TypeLine($"  ⚠  A banda \"{bandName}\" não foi encontrada.", ConsoleColor.Red, 10);
+        ConsoleUi.TypeLine($"  ⚠  A banda \"{bandName}\" não foi encontrada.", ConsoleColor.Red, 10);
         ReturnToMenu();
         return;
     }
 
-    int note;
+    Evaluation? note = null;
     do
     {
         Console.Write("  Nota (0 a 10): ");
 
-        if (!int.TryParse(Console.ReadLine(), out note) || note < 0 || note > 10)
+        if (!int.TryParse(Console.ReadLine(), out int noteValue) || noteValue < 0 || noteValue > 10)
         {
-            TypeLine("  ⚠  Nota inválida. Digite um número entre 0 e 10.", ConsoleColor.Red, 10);
-            note = -1;
+            ConsoleUi.TypeLine("  ⚠  Nota inválida. Digite um número entre 0 e 10.", ConsoleColor.Red, 10);
+            continue;
         }
 
-    } while (note < 0 || note > 10);
+        note = new Evaluation(noteValue);
+
+    } while (note is null);
 
     var band = registeredBands[bandName];
     band.AddNote(note);
 
     Console.WriteLine();
-    TypeLine($"  ✔  Nota {note} para \"{bandName}\" registrada com sucesso!", ConsoleColor.Green, 20);
+    ConsoleUi.TypeLine($"  ✔  Nota {note.Note} para \"{bandName}\" registrada com sucesso!", ConsoleColor.Green, 20);
 
     ReturnToMenu();
 }
@@ -298,7 +247,7 @@ void EvaluateBand()
 void DisplayBandDetails()
 {
     ShowTitleApplication();
-    ShowSectionHeader("                     DETALHES DA BANDA");
+    ConsoleUi.ShowSectionHeader("                     DETALHES DA BANDA");
 
     string bandName;
     do
@@ -307,21 +256,21 @@ void DisplayBandDetails()
         bandName = Console.ReadLine()!.Trim();
 
         if (string.IsNullOrWhiteSpace(bandName))
-            TypeLine("  ⚠  O nome não pode ser vazio. Tente novamente.", ConsoleColor.Red, 10);
+            ConsoleUi.TypeLine("  ⚠  O nome não pode ser vazio. Tente novamente.", ConsoleColor.Red, 10);
 
     } while (string.IsNullOrWhiteSpace(bandName));
 
     if (!registeredBands.ContainsKey(bandName))
     {
         Console.WriteLine();
-        TypeLine($"  ⚠  A banda \"{bandName}\" não foi encontrada.", ConsoleColor.Red, 10);
+        ConsoleUi.TypeLine($"  ⚠  A banda \"{bandName}\" não foi encontrada.", ConsoleColor.Red, 10);
         ReturnToMenu();
         return;
     }
 
     var band = registeredBands[bandName];
     Console.WriteLine();
-    TypeLine($"  📝  A média da banda \"{bandName}\" é {band.Average}", ConsoleColor.Blue, 10);
+    ConsoleUi.TypeLine($"  📝  A média da banda \"{bandName}\" é {band.Average}", ConsoleColor.Blue, 10);
 
     ReturnToMenu();
 
@@ -334,15 +283,15 @@ void ExitApplication()
     ShowTitleApplication();
     Console.WriteLine();
 
-    TypeLine("  Obrigado por usar o Screen Sound! 🎵", ConsoleColor.Cyan, 35);
-    TypeLine("  Até a próxima!", ConsoleColor.Yellow, 35);
+    ConsoleUi.TypeLine("  Obrigado por usar o Screen Sound! 🎵", ConsoleColor.Cyan, 20);
+    ConsoleUi.TypeLine("  Até a próxima!", ConsoleColor.Yellow, 20);
     Console.WriteLine();
 
     Console.ForegroundColor = ConsoleColor.DarkGray;
     Console.Write("  Encerrando");
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 5; i++)
     {
-        Thread.Sleep(500);
+        Thread.Sleep(300);
         Console.Write(".");
     }
     Console.ResetColor();
