@@ -5,7 +5,7 @@ internal class Evaluation
     #region CONSTRUCTOR
     public Evaluation(int note)
     {
-        Note = note;
+        Note = Math.Clamp(note, 0, 10);
     }
     #endregion CONSTRUCTOR
 
